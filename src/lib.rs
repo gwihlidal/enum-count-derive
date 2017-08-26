@@ -1,10 +1,9 @@
 extern crate proc_macro;
-use proc_macro::TokenStream;
-
 extern crate syn;
+#[macro_use] extern crate quote;
 
-#[macro_use]
-extern crate quote;
+use proc_macro::TokenStream;
+use syn::Ident;
 
 #[proc_macro_derive(EnumCount)]
 pub fn count(input: TokenStream) -> TokenStream {
@@ -28,6 +27,7 @@ fn expand_count(ast: &syn::DeriveInput) -> quote::Tokens {
 
 	// Used in the quasi-quotation below as `#name`
 	let name = &ast.ident;
+	let const_name = &Ident::from(name.to_string().to_uppercase() + "_COUNT");
 
 	// Helper is provided for handling complex generic types correctly and effortlessly
 	let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
@@ -39,5 +39,8 @@ fn expand_count(ast: &syn::DeriveInput) -> quote::Tokens {
 				#n
 			}
 		}
+
+		#[allow(dead_code)]
+		const #const_name: usize = #n;
 	}
 }
