@@ -41,6 +41,6 @@ fn expand_count(ast: &syn::DeriveInput) -> quote::Tokens {
 		}
 
 		#[allow(dead_code)]
-		const #const_name: usize = #n;
+		pub const #const_name: usize = #n;
 	}
 }
